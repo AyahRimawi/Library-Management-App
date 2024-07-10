@@ -1,12 +1,18 @@
 import logo from "./logo.svg";
 import "./App.css";
 import Books from "./Books";
+import Navbar from "./navbar";
+import Footer from "./footer";
+
+
 
 function App() {
   return (
     <div className="App">
+      <Navbar />
+
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+        {/* <img src={logo} className="App-logo" alt="logo" />
         <p>
           Edit <code>src/App.js</code> and save to reload.
         </p>
@@ -17,20 +23,24 @@ function App() {
           rel="noopener noreferrer"
         >
           Learn React
-        </a>
+        </a> */}
         <Books
           id="1"
           title="مقدمة ابن خلدون "
           author="ابن خلدون "
           isbn="1289499030"
         />
+
         <Books
           id="2"
           title="الحاوي في الطب "
           author="ابو بكر الرازي "
           isbn="893847239479"
         />
+
+        {/* <Books/> */}
       </header>
+      <Footer/>
     </div>
   );
 }
