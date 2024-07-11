@@ -1,29 +1,41 @@
-import logo from "./logo.svg";
 import "./App.css";
-import Books from "./Books";
-import Navbar from "./navbar";
-import Footer from "./footer";
+import { Route, Routes, Link } from "react-router-dom";
 
+import React, { useContext } from "react";
+import Header from "./Components/Header";
+import Login from "./Components/Login";
+import { AuthProvider, AuthContext } from "./Components/AuthContect";
 
+import Books from "./Components/Books";
+import ContactUs from "./Components/ContactUs";
+import AboutUs from "./Components/AboutUs";
+import Footer from "./Components/footer";
 
 function App() {
+    const authContext = useContext(AuthContext);
+
   return (
     <div className="App">
-      <Navbar />
+      <Header />
+      {authContext.auth.email ? "welcome" : <Login />}
+      {/* Routes */}
+      <Routes>
+        <Route
+          path="/Books"
+          element={
+            <Books
+              id="1"
+              title="مقدمة ابن خلدون "
+              author="ابن خلدون "
+              isbn="1289499030"
+            />
+          }
+        />
+        <Route path="/ContactUs" element={<ContactUs />} />
+        <Route path="/AboutUs" element={<AboutUs />} />
+      </Routes>
 
-      <header className="App-header">
-        {/* <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a> */}
+      {/* <header className="App-header">
         <Books
           id="1"
           title="مقدمة ابن خلدون "
@@ -36,13 +48,22 @@ function App() {
           title="الحاوي في الطب "
           author="ابو بكر الرازي "
           isbn="893847239479"
-        />
+        /> */}
 
-        {/* <Books/> */}
-      </header>
-      <Footer/>
+      {/* <Books/> */}
+      {/* </header> */}
+      <Footer />
     </div>
   );
 }
 
-export default App;
+// export default App;
+function AppWithStore() {
+  return(
+  <AuthProvider>
+    <App/>
+    </AuthProvider>
+  )
+}
+
+export default AppWithStore;
