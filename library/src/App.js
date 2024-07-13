@@ -1,4 +1,6 @@
 import "./App.css";
+import { Db } from "./Components/db";
+
 import { Route, Routes, Link } from "react-router-dom";
 
 import React, { useContext } from "react";
@@ -52,6 +54,8 @@ function App() {
 
       {/* <Books/> */}
       {/* </header> */}
+      <Db />
+
       <Footer />
     </div>
   );

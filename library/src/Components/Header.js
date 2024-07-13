@@ -89,7 +89,10 @@ export default function Header() {
             </button>
           </div>
         ) : (
-          "you need to login"
+          <button className="btn btn-primary" onClick={logout}>
+            {" "}
+            Login
+          </button>
         )}
       </div>
     </nav>
