@@ -35,10 +35,13 @@ export const Db = () => {
     //set the books list
     try {
       const data = await getDocs(booksCollectionRef);
-      const filterredData = data.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id,
-      }));
+      const filterredData = data.docs
+        .map((doc) => ({
+          ...doc.data(),
+          id: doc.id,
+        }))
+        .filter((book) => !book.deleted); // Exclude books marked as deleted
+
       setBooksList(filterredData);
       console.log(filterredData);
     } catch (error) {
@@ -57,6 +60,8 @@ export const Db = () => {
         title: newBooksTitle,
         ISBN: newISBN,
         author: newAuthor,
+        deleted: false, // Initialize the deleted field to false
+
         // userId: auth?.currentUser?.uid,
       });
       getBooksList();
@@ -71,7 +76,9 @@ export const Db = () => {
     const booksDoc = doc(db, "books", id);
     // console.log(booksDoc);
     try {
-      await deleteDoc(booksDoc);
+      await updateDoc(booksDoc, { deleted: true }); // Soft delete by setting `deleted` to true
+
+      // await deleteDoc(booksDoc);
       // Update booksList state immediately after deleting the document
       const updatedList = booksList.filter((books) => books.id !== id);
       setBooksList(updatedList);
