@@ -1,101 +1,80 @@
 import { useEffect, useState } from "react";
 import { db } from "../config/firebase";
-
 import {
   collection,
   getDocs,
   addDoc,
-  deleteDoc,
   updateDoc,
+  deleteDoc,
   doc,
 } from "firebase/firestore";
+import { addPredefinedBooks } from "./storeData"; 
+import Books from "./Books"; 
 
-//-------------------------------------------------------
 
 export const Db = () => {
-  //get books States
+  // Get books states
   const [booksList, setBooksList] = useState([]);
-
-  //add New books States
+  // Add new books states
   const [newBooksTitle, setNewBooksTitle] = useState("");
   const [newISBN, setNewISBN] = useState(0);
   const [newAuthor, setNewAuthor] = useState("");
-
-  //updated books States
+  // Update books states
   const [updatedTitle, setUpdatedTitle] = useState("");
 
   const booksCollectionRef = collection(db, "books");
-  // console.log(booksCollectionRef);
 
-  //-------------------------------------------------------
-  //get books async
-
+  // Get books async
   const getBooksList = async () => {
-    //read the data from database
-    //set the books list
     try {
       const data = await getDocs(booksCollectionRef);
-      const filterredData = data.docs
+      const filteredData = data.docs
         .map((doc) => ({
           ...doc.data(),
           id: doc.id,
         }))
         .filter((book) => !book.deleted); // Exclude books marked as deleted
 
-      setBooksList(filterredData);
-      console.log(filterredData);
+      setBooksList(filteredData);
+      console.log(filteredData);
     } catch (error) {
       console.error(error);
     }
   };
+
   useEffect(() => {
     getBooksList();
   }, []);
-  //----------------------------------------------------
-  //add New books async
 
-  const onSubmitbooks = async () => {
+  // Add new books async
+  const onSubmitBooks = async () => {
     try {
       await addDoc(booksCollectionRef, {
         title: newBooksTitle,
         ISBN: newISBN,
         author: newAuthor,
         deleted: false, // Initialize the deleted field to false
-
-        // userId: auth?.currentUser?.uid,
       });
       getBooksList();
     } catch (err) {
       console.error(err);
     }
   };
-  //-------------------------------------------------------
 
   // Delete books async
   const deleteBooks = async (id) => {
     const booksDoc = doc(db, "books", id);
-    // console.log(booksDoc);
     try {
-      await updateDoc(booksDoc, { deleted: true }); // Soft delete by setting `deleted` to true
-
-      // await deleteDoc(booksDoc);
-      // Update booksList state immediately after deleting the document
-      const updatedList = booksList.filter((books) => books.id !== id);
+      await updateDoc(booksDoc, { deleted: true }); // Soft delete by setting deleted to true
+      const updatedList = booksList.filter((book) => book.id !== id);
       setBooksList(updatedList);
     } catch (error) {
       console.error("Error deleting document: ", error);
     }
   };
 
-  // const deleteBooks = async (id) => {
-  //   const booksDoc = doc(db, "books", id);
-  //   await deleteDoc(booksDoc);
-  // };
-
-  //-------------------------------------------------------
-  //update books async
-
-  const updatebooksTitle = async (id) => {
+  // Update books async
+  const updateBooksTitle = async (id) => {
     const booksDoc = doc(db, "books", id);
     try {
       if (!updatedTitle) {
@@ -103,14 +82,10 @@ export const Db = () => {
       }
 
       await updateDoc(booksDoc, { title: updatedTitle });
-
-      // Update booksList state immediately after updating the document
-      const updatedList = booksList.map((books) =>
-        books.id === id ? { ...books, title: updatedTitle } : books
+      const updatedList = booksList.map((book) =>
+        book.id === id ? { ...book, title: updatedTitle } : book
       );
       setBooksList(updatedList);
-
-      // Clear updatedTitle after updating
       setUpdatedTitle("");
       document.getElementById("titleInput").value = "";
     } catch (error) {
@@ -118,19 +93,13 @@ export const Db = () => {
     }
   };
 
-  // const updatebooksTitle = async (id) => {
-  //   const booksDoc = doc(db, "books", id);
-  //   await updateDoc(booksDoc, { title: updatedTitle });
-  // };
-
-  //-------------------------------------------------------
 
   return (
     <>
-      {/* add New books */}
+      {/* Add new books */}
       <div>
         <input
-          placeholder="books title..."
+          placeholder="Book title..."
           onChange={(e) => setNewBooksTitle(e.target.value)}
         />
         <input
@@ -139,37 +108,40 @@ export const Db = () => {
           onChange={(e) => setNewISBN(Number(e.target.value))}
         />
         <input
-          placeholder="books Author..."
-          onChange={(e) => setNewAuthor(e.target.checked)}
+          placeholder="Book Author..."
+          onChange={(e) => setNewAuthor(e.target.value)} // Changed from e.target.checked to e.target.value
         />
-        <button onClick={onSubmitbooks}> Submit books</button>
+        <button onClick={onSubmitBooks}>Submit Book</button>
       </div>
-      {/* //------------------------------------------------------- */}
 
-      {/* get books */}
-      {booksList.map((books) => (
-        <div key={books.id}>
-          <h1>{books.title}</h1>
-          <p> Author: {books.author}</p>
+      {/* Add predefined books */}
+      <div>
+        {/* <button onClick={addPredefinedBooks}>Add Predefined Books</button> */}
+      </div>
 
-          <p> ISBN: {books.ISBN}</p>
-          {/* //------------------------------------------------------- */}
-          {/* //Delete books */}
-          <button onClick={() => deleteBooks(books.id)}> Delete books</button>
-          {/* <button onClick={deleteBooks(books.id)}> Delete books</button> هاي خطأ بتعمل حذف بدون نقر ع الزر والسبب يعود لوجود uniqe parameter */}
-          {/* //------------------------------------------------------- */}
-          {/* //update books */}
+      {/* Get books */}
+      {booksList.map((book) => (
+        <div key={book.id}>
+          <Books
+            key={book.id}
+            title={book.title}
+            author={book.author}
+            isbn={book.ISBN}
+          />
+
+          {/* <h1>{book.title}</h1>
+          <p>Author: {book.author}</p>
+          <p>ISBN: {book.ISBN}</p> */}
+          {/* Delete books */}
+          <button onClick={() => deleteBooks(book.id)}>Delete Book</button>
+          {/* Update books */}
           <input
             id="titleInput"
-            placeholder="new title..."
+            placeholder="New title..."
             onChange={(e) => setUpdatedTitle(e.target.value)}
           />
-          {/* <button onClick={() => updatebooksTitle(books.id)}>
-            {" "}
-            Update Title
-          </button> */}
           <button
-            onClick={() => updatebooksTitle(books.id)}
+            onClick={() => updateBooksTitle(book.id)}
             disabled={!updatedTitle}
           >
             Update Title

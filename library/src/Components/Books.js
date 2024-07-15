@@ -1,50 +1,15 @@
-export default function Books({ id, title, author, isbn,children }) {
+import React from "react";
+
+export default function Books({ title, author, isbn }) {
   return (
-    <div>
-      <div class="container text-center">
-        <div class="row">
-          <div class="col">
-            <div
-              class="card mb-4"
-              style={{ width: "18rem", border: "1px solid black" }}
-            >
-              <div class="card-header">{id}</div>
-              <ul class="list-group list-group-flush">
-                <li class="list-group-item">{title}</li>
-                <li class="list-group-item">{author}</li>
-                <li class="list-group-item">{isbn}</li>
-                <li class="list-group-item">{children}</li>
-              </ul>
-            </div>
-          </div>
+    <div className="container mx-auto">
+      <div className="m-w-xs rounded overflow-hidden shadow-lg mx-auto my-4 bg-white">
+        <div className="px-6 py-4">
+          <div className="font-bold text-xl mb-2 text-gray-800">{title}</div>
+          <p className="text-gray-700 text-base mb-2"><span className="font-semibold">Author:</span> {author}</p>
+          <p className="text-gray-700 text-base mb-2"><span className="font-semibold">ISBN:</span> {isbn}</p>
         </div>
       </div>
     </div>
   );
 }
-
-
-
-// export default function Books() {
-//   const [books, setBooks] = useState([
-//     {
-//       id: 1,
-//       title: "مقدمة ابن خلدون",
-//       author: "ابن خلدون",
-//       isbn: "1289499030",
-//     },
-//   ]);
-
-//   return (
-//     <>
-//       {books.map((book) => (
-//         <div className="book" key={book.id}>
-//           <p>Title: {book.title}</p>
-//           <p>ID: {book.id}</p>
-//           <p>Author: {book.author}</p>
-//           <p>ISBN: {book.isbn}</p>
-//         </div>
-//       ))}
-//     </>
-//   );
-// }
